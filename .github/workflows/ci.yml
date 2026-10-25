@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    env:
+      NEXT_TELEMETRY_DISABLED: 1
+      # No API in CI: build-time fetches fall back to empty pages (see buildSafe).
+      NEXT_PUBLIC_API_BASE_URL: http://127.0.0.1:9
+      NEXT_PUBLIC_IMAGE_ORIGINS: https://images.example.com
+      NEXT_PUBLIC_SITE_URL: https://example.com
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm audit --omit=dev --audit-level=high
+      - run: npm run build
