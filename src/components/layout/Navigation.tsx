@@ -5,11 +5,11 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
-import { NAV } from '@/lib/site';
+import type { NavItem } from '@/lib/site';
 
 const HOME_SECTIONS = ['hero', 'about', 'experience', 'education', 'projects', 'skills', 'contact'];
 
-export default function Navigation() {
+export default function Navigation({ items }: { items: readonly NavItem[] }) {
   const pathname = usePathname();
   const isHome = pathname === '/';
   const [activeSection, setActiveSection] = useState('hero');
@@ -74,7 +74,7 @@ export default function Navigation() {
         </Link>
 
         <ul className="hidden items-center gap-1 lg:flex">
-          {NAV.map(({ label, href }) => {
+          {items.map(({ label, href }) => {
             const active = isActive(href);
             return (
               <li key={href}>
@@ -130,7 +130,7 @@ export default function Navigation() {
             className="overflow-hidden lg:hidden"
           >
             <ul className="flex flex-col gap-1 px-6 pb-10 pt-2">
-              {NAV.map(({ label, href }, i) => (
+              {items.map(({ label, href }, i) => (
                 <motion.li
                   key={href}
                   initial={{ opacity: 0, x: -12 }}

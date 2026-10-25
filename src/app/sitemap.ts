@@ -12,7 +12,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     safe(() => publicApi.milestones(1, 50), empty),
   ]);
 
-  const staticRoutes = ['', '/blog', '/trips', '/career'].map((path) => ({ url: `${SITE_URL}${path}`, changeFrequency: 'weekly' as const }));
+  const sections = [
+    ['/blog', posts.total],
+    ['/trips', trips.total],
+    ['/career', milestones.total],
+  ] as const;
+  const staticRoutes = ['', ...sections.filter(([, total]) => total > 0).map(([path]) => path)].map((path) => ({
+    url: `${SITE_URL}${path}`,
+    changeFrequency: 'weekly' as const,
+  }));
   const entry = (prefix: string) => (c: { slug: string; updatedAt: string }) => ({
     url: `${SITE_URL}/${prefix}/${c.slug}`,
     lastModified: c.updatedAt,

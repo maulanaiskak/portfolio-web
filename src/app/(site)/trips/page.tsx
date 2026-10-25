@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import PageHeader from '@/components/content/PageHeader';
 import { EmptyState, TripCard } from '@/components/content/Cards';
 import Pagination from '@/components/content/Pagination';
@@ -18,6 +19,7 @@ const PAGE_SIZE = 12;
 export default async function TripsPage({ searchParams }: { searchParams: Promise<{ page?: string }> }) {
   const page = Math.max(1, Number((await searchParams).page) || 1);
   const { items, total } = await publicApi.trips(page, PAGE_SIZE);
+  if (total === 0 && page === 1) notFound(); // hidden until the first trip
   const countries = [...new Set(items.map((t) => t.countryCode).filter(Boolean))];
 
   return (

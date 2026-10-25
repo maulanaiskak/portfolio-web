@@ -1,11 +1,13 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import { ArrowUpRight } from 'lucide-react';
 import PageHeader from '@/components/content/PageHeader';
 import { EmptyState } from '@/components/content/Cards';
 import RemoteImage from '@/components/content/RemoteImage';
 import { buildSafe, publicApi } from '@/lib/api';
 import { formatMonth } from '@/lib/format';
+import type { MilestoneSummary, Paged } from '@/types';
 
 export const revalidate = 60; // seconds; keep in sync with REVALIDATE_SECONDS
 
@@ -16,7 +18,11 @@ export const metadata: Metadata = {
 };
 
 export default async function CareerPage() {
-  const { items } = await buildSafe(() => publicApi.milestones(1, 50), { items: [], total: 0 });
+  // null only when the API is unreachable during `next build`: render empty
+  // rather than baking a 404 into the first deploy.
+  const res = await buildSafe<Paged<MilestoneSummary> | null>(() => publicApi.milestones(1, 50), null);
+  if (res?.total === 0) notFound(); // hidden until the first milestone
+  const items = res?.items ?? [];
 
   return (
     <>

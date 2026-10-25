@@ -13,12 +13,19 @@ export const site = {
   roles: ['Backend Engineer', 'Java Spring Boot Engineer', 'Golang Engineer', 'Google Cloud Architect'],
 };
 
-export const NAV = [
+export type Section = 'blog' | 'trips' | 'career';
+export type Sections = Record<Section, boolean>;
+export type NavItem = { label: string; href: string; section?: Section };
+
+export const NAV: readonly NavItem[] = [
   { label: 'About', href: '/#about' },
   { label: 'Experience', href: '/#experience' },
   { label: 'Projects', href: '/#projects' },
   { label: 'Skills', href: '/#skills' },
-  { label: 'Career', href: '/career' },
-  { label: 'Trips', href: '/trips' },
-  { label: 'Blog', href: '/blog' },
-] as const;
+  { label: 'Career', href: '/career', section: 'career' },
+  { label: 'Trips', href: '/trips', section: 'trips' },
+  { label: 'Blog', href: '/blog', section: 'blog' },
+];
+
+/** Nav links, minus content sections with nothing published yet. */
+export const visibleNav = (sections: Sections) => NAV.filter((n) => !n.section || sections[n.section]);

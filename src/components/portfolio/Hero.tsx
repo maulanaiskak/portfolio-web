@@ -52,7 +52,7 @@ const fadeUp = (delay: number) => ({
   transition: { duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] as const },
 });
 
-export default function Hero() {
+export default function Hero({ showJournal }: { showJournal: boolean }) {
   const reduced = useReducedMotion();
 
   return (
@@ -104,12 +104,14 @@ export default function Hero() {
           >
             View my work
           </Link>
-          <Link
-            href="/blog"
-            className="rounded-full border border-white/15 bg-white/5 px-8 py-3 font-semibold text-white backdrop-blur transition-all hover:-translate-y-0.5 hover:border-accent/50"
-          >
-            Read the journal
-          </Link>
+          {showJournal && (
+            <Link
+              href="/blog"
+              className="rounded-full border border-white/15 bg-white/5 px-8 py-3 font-semibold text-white backdrop-blur transition-all hover:-translate-y-0.5 hover:border-accent/50"
+            >
+              Read the journal
+            </Link>
+          )}
         </motion.div>
 
         <motion.div {...fadeUp(0.5)} className="flex items-center justify-center gap-5 text-gray-400">

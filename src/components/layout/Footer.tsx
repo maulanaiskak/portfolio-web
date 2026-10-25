@@ -1,9 +1,9 @@
 import Link from 'next/link';
 import { Mail } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from './icons';
-import { NAV, site } from '@/lib/site';
+import { site, type NavItem } from '@/lib/site';
 
-export default function Footer() {
+export default function Footer({ items }: { items: readonly NavItem[] }) {
   return (
     <footer className="relative border-t border-white/5 bg-background">
       <div className="mx-auto grid max-w-6xl gap-10 px-6 py-14 md:grid-cols-[1.4fr_1fr_1fr]">
@@ -38,7 +38,7 @@ export default function Footer() {
         <div>
           <p className="eyebrow mb-4 !text-gray-500">Explore</p>
           <ul className="grid gap-2 text-sm">
-            {NAV.map((n) => (
+            {items.map((n) => (
               <li key={n.href}>
                 <Link href={n.href} className="text-gray-400 transition-colors hover:text-white">
                   {n.label}

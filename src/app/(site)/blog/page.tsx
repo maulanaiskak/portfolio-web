@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 import PageHeader from '@/components/content/PageHeader';
 import { EmptyState, PostCard } from '@/components/content/Cards';
 import Pagination from '@/components/content/Pagination';
@@ -21,6 +22,8 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
   const tag = (sp.tag ?? '').toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 30);
 
   const [{ items, total }, tags] = await Promise.all([publicApi.posts(page, PAGE_SIZE, tag || undefined), safe(publicApi.tags, [])]);
+  if (total === 0 && !tag && page === 1) notFound(); // hidden until the first post
+
   const [featured, ...rest] = page === 1 && !tag ? items : [undefined, ...items];
 
   const chip = (active: boolean) =>

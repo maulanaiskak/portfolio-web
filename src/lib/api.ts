@@ -10,6 +10,7 @@ import type {
   Trip,
   TripSummary,
 } from '@/types';
+import type { Sections } from '@/lib/site';
 
 export const API_BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL ?? 'http://localhost:8080').replace(/\/$/, '');
 
@@ -93,6 +94,19 @@ export const publicApi = {
     (await publicGet<Post>(`/posts/${encodeURIComponent(slug)}`, ['posts', `post:${slug}`])).data,
   tags: async (): Promise<TagCount[]> => (await publicGet<TagCount[]>('/posts/tags', ['posts'])).data,
 };
+
+/** Which content sections have anything published, so empty ones can be
+ * hidden. If the API can't be reached the section counts as published: an
+ * outage must not drop links from pages cached for the next minute. */
+export async function publishedSections(): Promise<Sections> {
+  const has = (fn: () => Promise<{ total: number }>) => fn().then((r) => r.total > 0, () => true);
+  const [blog, trips, career] = await Promise.all([
+    has(() => publicApi.posts(1, 1)),
+    has(() => publicApi.trips(1, 1)),
+    has(() => publicApi.milestones(1, 1)),
+  ]);
+  return { blog, trips, career };
+}
 
 /** Runs a public fetch, returning fallback if the API is unreachable, so one
  * failing section doesn't take down the whole page. */

@@ -6,7 +6,7 @@ import Projects from '@/components/portfolio/Projects';
 import Skills from '@/components/portfolio/Skills';
 import BeyondCode from '@/components/portfolio/BeyondCode';
 import Contact from '@/components/portfolio/Contact';
-import { buildSafe, publicApi, safe } from '@/lib/api';
+import { buildSafe, publicApi, publishedSections, safe } from '@/lib/api';
 import { site } from '@/lib/site';
 import { SITE_URL } from '@/lib/format';
 import type { Cv } from '@/types';
@@ -17,12 +17,13 @@ const emptyCv: Cv = { experiences: [], projects: [], education: [], skills: [] }
 const emptyPage = { items: [], total: 0 };
 
 export default async function HomePage() {
-  const [cv, posts, trips, milestones] = await Promise.all([
+  const [cv, posts, trips, milestones, sections] = await Promise.all([
     // CV is the core of the page: at runtime a failure keeps the last good render.
     buildSafe(publicApi.cv, emptyCv),
     safe(() => publicApi.posts(1, 3), emptyPage),
     safe(() => publicApi.trips(1, 3), emptyPage),
     safe(() => publicApi.milestones(1, 3), emptyPage),
+    publishedSections(),
   ]);
 
   const personJsonLd = {
@@ -40,7 +41,7 @@ export default async function HomePage() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd).replace(/</g, '\\u003c') }} />
-      <Hero />
+      <Hero showJournal={sections.blog} />
       <About />
       <Experience experiences={cv.experiences} />
       <Education education={cv.education} />
