@@ -62,7 +62,7 @@ Open http://localhost:3000, and http://localhost:3000/admin for the admin panel.
 
 | Variable | Example | Notes |
 |---|---|---|
-| `NEXT_PUBLIC_API_BASE_URL` | `https://maulanaiskak-api.onrender.com` | Public API URL |
+| `NEXT_PUBLIC_API_BASE_URL` | `https://portfolio-api-89p5.onrender.com` | Public API URL |
 | `NEXT_PUBLIC_IMAGE_ORIGINS` | `https://images.yourdomain.com` | R2 public origin(s), comma-separated |
 | `NEXT_PUBLIC_SITE_URL` | `https://yourdomain.com` | Canonical URL for sitemap/OG |
 | `REVALIDATE_SECRET` | *(same as API)* | Server-only |
